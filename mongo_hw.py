@@ -25,16 +25,24 @@ def sort_by_date(date_direction=1):
     '''1 = ascending, -1 =  descending'''
     return list(events_collection.find().sort([('Дата', -1)]))
 
+def find_artist_by_name(artist):
+    Regex = re.compile(r'/*'+artist+'/*')
+    return list(events_collection.find(
+        {'Исполнитель': {'$regex': Regex,'$options':'$i'}}
+    ).sort(
+        [('Цена', -1)]
+    ))
+
+
 events_db = client['events_list']
 events_collection = events_db['events']
 
-events_collection.delete_many({})
-single_event = events_collection.insert_many(import_data_from_file_to_db('artists.csv'))
+# events_collection.delete_many({})
+# single_event = events_collection.insert_many(import_data_from_file_to_db('artists.csv'))
 
 # pprint(sort_by_price(-1))
-pprint(sort_by_date(-1))
+# pprint(sort_by_date(-1))
 
 
+print(find_artist_by_name('to mars'))
 
-# print(single_event.items())
-# print(events_db.list_collection_names())
